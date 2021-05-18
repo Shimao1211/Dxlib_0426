@@ -167,6 +167,22 @@ int WINAPI WinMain(
 		{
 			X++;	//‰E‚ÉˆÚ“®
 		}
+		if (KeyDown(KEY_INPUT_UP) == TRUE)
+		{
+			Y -= 5;
+		}
+		if (KeyDown(KEY_INPUT_DOWN) == TRUE)
+		{
+			Y += 5;
+		}
+		if (KeyDown(KEY_INPUT_RIGHT) == TRUE)
+		{
+			X += 5;
+		}
+		if (KeyDown(KEY_INPUT_LEFT) == TRUE)
+		{
+			X -= 5;
+		}
 
 
 		DrawCircle(X, Y, radius, GetColor(255, 255, 0), TRUE);
