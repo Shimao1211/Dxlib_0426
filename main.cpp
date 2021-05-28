@@ -22,6 +22,7 @@ struct CHARACTOR
 	BOOL IsDraw = FALSE;//画像が描画できる?
 };
 
+
 //グローバル変数
 //シーンを管理する変数
 GAME_SCENE GameScene;		//現在のゲームシーン
@@ -74,6 +75,8 @@ VOID ChangeScene(GAME_SCENE scene);	//シーン切り替え
 VOID CollUpdatePlayer(CHARACTOR* chara);	//当たり判定の領域を更新
 
 VOID CollUpdate(CHARACTOR* chara);	//当たり判定の領域を更新
+
+BOOL OnCollRect(RECT a, RECT b);	//矩形と矩形の当たり判定
 
 // プログラムは WinMain から始まります
 //windowsのプログラミング方法＝（WinAPI）で動いている！
@@ -134,14 +137,14 @@ int WINAPI WinMain(
 	//画像の幅と高さを取得
 	GetGraphSize(player.handle, &player.width, &player.height);
 
-	//当たり判定を更新する
-	CollUpdatePlayer(&player);	//プレイヤーの当たり判定の更新
-
 	//プレイヤーの初期化
 	player.x = GAME_WIDTH / 2 - player.width / 2;	//中央寄せ
 	player.y = GAME_HEIGHT / 2 - player.height / 2;	//中央寄せ
 	player.speed = 500;
 	player.IsDraw = TRUE;	//描画できる！
+
+	//当たり判定を更新する
+	CollUpdatePlayer(&player);	//プレイヤーの当たり判定の更新:
 
 	//ゴールの画像を読み込み
 	strcpyDx(goal.path, ".\\image\\goal.png");	//パスのコピー
@@ -164,16 +167,14 @@ int WINAPI WinMain(
 	//画像の幅と高さを取得
 	GetGraphSize(goal.handle, &goal.width, &goal.height);
 
-	//当たり判定を更新する
-	CollUpdate(&goal);	//ゴールの当たり判定の更新
-
 	//ゴールの初期化
 	goal.x = GAME_WIDTH - goal.width;
 	goal.y = 0;
 	goal.speed = 500;
 	goal.IsDraw = TRUE;	//描画できる！
 
-
+	//当たり判定を更新する
+	CollUpdate(&goal);
 
 	//無限ループ
 	while (1)
@@ -292,7 +293,6 @@ VOID TitleProc(VOID)
 VOID TitleDraw(VOID)
 {
 
-
 	DrawString(0, 0, "タイトル画面", GetColor(0, 0, 0));
 	return;
 }
@@ -312,6 +312,7 @@ VOID Play(VOID)
 /// </summary>
 VOID PlayProc(VOID)
 {
+	/*
 	if (KeyClick(KEY_INPUT_RETURN) == TRUE)
 	{
 		//シーン切り替え
@@ -319,7 +320,7 @@ VOID PlayProc(VOID)
 
 		//エンド画面に切り替え
 		ChangeScene(GAME_SCENE_END);
-	}
+	}*/
 
 	//プレイヤーの操作
 	if (KeyDown(KEY_INPUT_UP) == TRUE)
@@ -343,6 +344,18 @@ VOID PlayProc(VOID)
 	}
 	//当たり判定を更新する
 	CollUpdatePlayer(&player);
+
+	//ゴールの当たり判定を更新する
+	CollUpdate(&goal);
+
+	//プレイヤーがゴールに当たったときは
+	if (OnCollRect(player.coll, goal.coll) == TRUE)
+	{
+		//エンド画面に切り替え
+		ChangeScene(GAME_SCENE_END);
+
+		return;
+	}
 
 	return;
 }
@@ -383,6 +396,7 @@ VOID PlayDraw(VOID)
 	DrawString(0, 0, "プレイ画面", GetColor(0, 0, 0));
 	return;
 }
+
 
 /// <summary>
 ///  エンド画面
@@ -551,4 +565,30 @@ VOID CollUpdate(CHARACTOR* chara)
 	chara->coll.bottom = chara->y + chara->height;	//当たり判定を微調整
 
 	return;
+}
+
+/// <summary>
+/// 矩形と矩形の当たり判定
+/// </summary>
+/// <param name="a">矩形A</param>
+/// <param name="b">矩形B</param>
+/// <returns>あったらTRUE／あたらないならFALSE</returns>
+BOOL OnCollRect(RECT a, RECT b)
+{
+	if (
+		a.left < b.right &&//矩形Aの左辺X座標 < 矩形Bの右辺X座標　かつ
+		a.right > b.left &&//矩形Aの右辺X座標 > 矩形Bの左辺X座標　かつ
+		a.top < b.bottom &&//矩形Aの上辺Y座標 < 矩形Bの下辺Y座標　かつ
+		a.bottom > b.top//矩形Aの下辺Y座標 > 矩形Bの上辺Y座標
+		)
+	{
+		//あたっているとき
+		return TRUE;
+
+	}
+	else
+	{
+		//あたっていないとき
+		return FALSE;
+	}
 }
