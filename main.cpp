@@ -394,7 +394,6 @@ BOOL LoadAudio(AUDIO* audio, const char* path, int volume, int playType)
 		//当たり判定を更新する
 		CollUpdatePlayer(&player);	//プレイヤーの当たり判定の更新:
 
-
 		//ゴールの初期化
 		goal.img.x = 0;
 		goal.img.y = 0;
@@ -501,6 +500,18 @@ BOOL LoadAudio(AUDIO* audio, const char* path, int volume, int playType)
 
 		//PushEnterを点滅
 		if (PushEnterBrink == TRUE)
+		{
+			//半透明にする
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, ((float)(PushEnterCntMAX - PushEnterCnt) / PushEnterCntMAX) * 255);
+
+			//PushEnterの描画
+			DrawGraph(TitleEnter.x, TitleEnter.y, TitleEnter.handle, TRUE);
+
+			//半透明終了
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		}
+
+		if (PushEnterBrink == FALSE)
 		{
 			//半透明にする
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, ((float)(PushEnterCntMAX - PushEnterCnt) / PushEnterCntMAX) * 255);
