@@ -398,7 +398,7 @@ BOOL LoadImageMem(IMAGE* image, const char* path)
 
 		//タイトルロゴの位置を決める
 		TitleLogo.x = GAME_WIDTH / 2 - TitleLogo.width / 2;	//中央揃え
-		TitleEnter.y = 100;
+		TitleLogo.y = 200;
 
 		//PushEnterの位置を決める
 		TitleEnter.x = GAME_WIDTH / 2 - TitleEnter.width / 2;	//中央揃え
