@@ -1,6 +1,6 @@
 //キーボードのソースファイル
 
-//ヘッダファイルを読み込み
+//ヘッダファイル読み込み
 #include "keyboard.h"
 
 //グローバル変数
@@ -14,13 +14,13 @@ KEYBOARD keyboard;
 VOID AllKeyUpdate(VOID)
 {
 	//直前のキー入力をとっておく
-	for(int i = 0; i <KEY_KIND_MAX; i++)
+	for (int i = 0; i < KEY_KIND_MAX; i++)
 	{
 		keyboard.OldAllKeyState[i] = keyboard.AllKeyState[i];
 	}
 
-	//すべてのキー入力状態を得る
-	GetHitKeyStateAll(&keyboard.TempKeyState[0]);
+	//すべてのキーの入力状態を得る
+	GetHitKeyStateAll(keyboard.TempKeyState);
 
 	//押されているキーの時間を更新する
 	for (int i = 0; i < KEY_KIND_MAX; i++)
@@ -38,6 +38,7 @@ VOID AllKeyUpdate(VOID)
 
 	return;
 }
+
 /// <summary>
 /// キーを押しているか、キーコードで判断する
 /// </summary>
@@ -64,8 +65,8 @@ BOOL KeyUp(int KEY_INPUT_)
 {
 	if (
 		keyboard.OldAllKeyState[KEY_INPUT_] != 0	//以前は押していた
-		&& keyboard.AllKeyState[KEY_INPUT_] != 0	//現在は押していない
-		)		//
+		&& keyboard.AllKeyState[KEY_INPUT_] == 0	//現在は押していない
+		)
 	{
 		return TRUE;
 	}
@@ -74,6 +75,7 @@ BOOL KeyUp(int KEY_INPUT_)
 		return FALSE;
 	}
 }
+
 /// <summary>
 /// キーをクリックしたか、キーコードで判断する
 /// </summary>
@@ -83,8 +85,8 @@ BOOL KeyClick(int KEY_INPUT_)
 {
 	if (
 		keyboard.OldAllKeyState[KEY_INPUT_] != 0	//以前は押していた
-		&& keyboard.AllKeyState[KEY_INPUT_] != 0	//現在は押していない
-		)		//
+		&& keyboard.AllKeyState[KEY_INPUT_] == 0	//現在は押していない
+		)
 	{
 		return TRUE;
 	}
@@ -98,16 +100,16 @@ BOOL KeyClick(int KEY_INPUT_)
 /// キーを押し続けているか、キーコードで判断する
 /// </summary>
 /// <param name="KEY_INPUT_">キーコード</param>
-/// <param name="MillTime">キーを押し続けているミリ秒</param>
+/// <param name="MilliTime">キーを押し続けているミリ秒</param>
 /// <returns></returns>
 BOOL KeyDownKeep(int KEY_INPUT_, int MilliTime)
 {
-	//1秒は1000ミリ秒
+	//１秒は1000ミリ秒
 	float MilliSec = 1000.0f;
 
 	//押し続けている時間は、ミリ秒数×FPS値
-	//1500ミリ秒押す/1000ミリ　→　1.5秒×60FPS　= 90
-	int UpdateTime = (MilliTime / MilliSec) * 600;
+	//例）1500ミリ秒押す/1000ミリ　→　1.5秒×60FPS = 90
+	int UpdateTime = (MilliTime / MilliSec) * 60;
 
 	if (keyboard.AllKeyState[KEY_INPUT_] > UpdateTime)
 	{
