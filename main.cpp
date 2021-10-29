@@ -361,7 +361,6 @@ BOOL LoadImageMem(IMAGE* image, const char* path)
 		//当たり判定を更新する
 		CollUpdatePlayer(&player);	//プレイヤーの当たり判定の更新:
 
-
 		//ゴールの初期化
 		goal.img.x = 1200;
 		goal.img.y = 355;
@@ -505,6 +504,19 @@ BOOL LoadImageMem(IMAGE* image, const char* path)
 			//半透明終了
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
+
+		if (PushEnterBrink == FALSE)
+		{
+			//半透明にする
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, ((float)(PushEnterCntMAX - PushEnterCnt) / PushEnterCntMAX) * 255);
+
+			//PushEnterの描画
+			DrawGraph(TitleEnter.x, TitleEnter.y, TitleEnter.handle, TRUE);
+
+			//半透明終了
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		}
+		
 
 		
 		
